@@ -7,6 +7,21 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+DOCUMENTATION = r'''
+---
+'''
+
+EXAMPLES = r'''
+- name: add new row, if row does not exist.
+  sqlite_state:
+    rows:
+    - Column_header1: 'row1_value'
+      Column_header2: 'row1_value'
+    - Column_header1: 'row2_value'
+    path: /path/to/sqlite.db
+    tables: test
+'''
+    
 import os
 import yaml
 from ansible.module_utils.basic import AnsibleModule
