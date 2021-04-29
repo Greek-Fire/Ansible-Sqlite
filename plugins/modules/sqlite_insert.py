@@ -32,27 +32,31 @@ try:
 except AnsibleParserError():
     raise AnsibleError("Please install sqlite3")
 
+def conn(path):
+    conn = None
+    try:
+        conn = sqlite3.connect(path)
+    except Error as e:
+        print(e)
+    return conn
+
 def path_test(file_path):
     if not os.path.exists(file_path):
         module.fail_json(msg="file not found: %s" % source)
-
-def conn(path,q):
-    curse = sqlite3.connect(path).cursor()
-    vv = curse.execute(q)
-    conn = list(vv)
-    return conn
 
 def row_finder(x):
     d = x[0]
     l = len(x)
     ret = [[],[],[]]
     if not isinstance(d,dict):
-        raise Exception("Please use a list of dictionaries")
+        raise Exception("Please install sqlite3")
     key_list = []
     for d in x:
+        v = tuple(d.values())
+        print(v)
+        ret[2].append(v)
         for k,v in d.items():
             key_list.append(k)
-            ret[2].append((v))
             ret[1].append((k,v))
     ret[0].append(set(key_list))
     return ret
@@ -79,11 +83,12 @@ def query_table(ret, table):
     table_results.pop(0)
     x = " ".join(table_results)
     query_results = "select * from " + table + " where " + x + ";"
+    print(query_results)
     return query_results
 
 def state_test(path,q):
     connector(path,q)
-    
+
 def sort(tup):
     lst = []
     if not isinstance(tup[0], str) or isinstance(tup[0], int):
@@ -96,6 +101,25 @@ def sort(tup):
     lst.sort()
     lst = [int(i) if i.isdigit() else i for i in lst ]
     return lst
+
+def arrange(lis):
+    res = []
+    for sup in lis:
+        print(sup)
+        if isinstance(sup[0], int):
+            x = (sup[1],sup[0])
+            res.append(x)
+        else:
+            res.append(sup)
+    res = sorted(res, key=lambda x: x[0])
+    return res
+
+  def deleteRecord(x,my_list):
+    cursor = conn.cursor()
+    sql_delete = "DELETE from " + table + " WHERE " + x + "?"
+    cursor.executemany(sql_delete,my_list)
+    conn.commit()
+    cursor.close()
 
 def main():
     module_args = dict(
@@ -119,13 +143,13 @@ def main():
 
 
     path_test(path)
-    ret = row_finder(rows, table)
-    q = query_table(ret)
+    ret = row_finder(rows)
+    q = query_table(ret, table)
     curse = sqlite3.connect(path).cursor()
     change = list(curse.execute(q))
     current = ret[2]
-    c1 = sort(current)
-    c2 = sort(change)
+    c1 = arrange(current)
+    c2 = arrange(change)
 
     if c1 != c2:
         result['changed'] = True
@@ -143,3 +167,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+
