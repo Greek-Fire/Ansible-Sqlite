@@ -63,7 +63,7 @@ def query_table(ret, table):
 
     table_results.pop(0)
     x = " ".join(table_results)
-    query_results = "select * from " + table + " " + x + ";"
+    query_results = "select * from " + table + " where " + x + ";"
     return query_results
 
 def state_test(path,q):
