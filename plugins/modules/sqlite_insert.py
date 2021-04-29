@@ -32,7 +32,7 @@ def row_finder(x):
     l = len(x)
     ret = [[],[],[]]
     if not isinstance(d,dict):
-        raise Exception("Please install sqlite3")
+        raise Exception("Please use a list of dictionaries")
     key_list = []
     for d in x:
         for k,v in d.items():
