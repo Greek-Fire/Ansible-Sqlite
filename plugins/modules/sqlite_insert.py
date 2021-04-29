@@ -42,7 +42,7 @@ def row_finder(x):
     ret[0].append(set(key_list))
     return ret
 
-def query_table(ret):
+def query_table(ret, table):
     key = list(ret[0][0])
     value = ret[1]
     table_results = []
@@ -63,7 +63,7 @@ def query_table(ret):
 
     table_results.pop(0)
     x = " ".join(table_results)
-    query_results = "select * from " + table + x + ";"
+    query_results = "select * from " + table + " " + x + ";"
     return query_results
 
 def state_test(path,q):
@@ -104,7 +104,7 @@ def main():
 
 
     path_test(path)
-    ret = row_finder(rows)
+    ret = row_finder(rows, table)
     q = query_table(ret)
     curse = sqlite3.connect(path).cursor()
     change = list(curse.execute(q))
