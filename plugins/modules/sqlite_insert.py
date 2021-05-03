@@ -114,12 +114,24 @@ def arrange(lis):
     res = sorted(res, key=lambda x: x[0])
     return res
 
-  def deleteRecord(x,my_list):
-    cursor = conn.cursor()
-    sql_delete = "DELETE from " + table + " WHERE " + x + "?"
-    cursor.executemany(sql_delete,my_list)
+def query(conn,x):
+    cur = conn.cursor()
+    x = list(cur.execute(x))
     conn.commit()
-    cursor.close()
+    return(x)
+
+def replaceRecord(conn,qr,table):
+    delete = qr[1]
+    values = qr[2]
+    cur = conn.cursor()
+    cur.execute(delete)
+    conn.commit()
+    for x in values[2]:
+        c = tuple(values[0][0])
+        v = tuple(x)
+        replace = "REPLACE INTO " + table + " " + str(c) +" VALUES" + str(v) + ";"
+        cur.execute(replace)
+        conn.commit()
 
 def main():
     module_args = dict(
@@ -141,24 +153,29 @@ def main():
     path = module.params['path']
     rows = module.params['rows']
 
-
     path_test(path)
+    conn = connection(path)
     ret = row_finder(rows)
     q = query_table(ret, table)
-    curse = sqlite3.connect(path).cursor()
-    change = list(curse.execute(q))
-    current = ret[2]
-    c1 = arrange(current)
-    c2 = arrange(change)
+    #curse = sqlite3.connect(path).cursor()
+    #change = list(curse.execute(q))
+    #change = query(conn, q)
+    #current = ret[2]
+    with conn:
+        change = query(conn, q[0])
+        current = ret[2]
+        c1 = arrange(change)
+        c2 = arrange(current)
 
-    if c1 != c2:
-        result['changed'] = True
-        result['diff'] = dict(
-            before=yaml.safe_dump(c1),
-            after=yaml.safe_dump(c2)
-        )
+        if c1 != c2:
+            result['changed'] = True
+            result['diff'] = dict(
+                after=yaml.safe_dump(c1),
+                before=yaml.safe_dump(c2)
+            )
 
-    # Update database
+            replaceRecord(conn,q,table)
+    conn.close()
 
     if module.check_mode or not result['changed']:
         module.exit_json(**result)
@@ -167,5 +184,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-
