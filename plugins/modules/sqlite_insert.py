@@ -32,7 +32,7 @@ try:
 except AnsibleParserError():
     raise AnsibleError("Please install sqlite3")
 
-def conn(path):
+def connection(path):
     conn = None
     try:
         conn = sqlite3.connect(path)
@@ -47,14 +47,15 @@ def path_test(file_path):
 def row_finder(x):
     d = x[0]
     l = len(x)
-    ret = [[],[],[]]
+    ret = [[],[],[],[]]
     if not isinstance(d,dict):
         raise Exception("Please install sqlite3")
     key_list = []
     for d in x:
+        k = tuple(d.keys())
         v = tuple(d.values())
-        print(v)
         ret[2].append(v)
+        ret[3].append(k)
         for k,v in d.items():
             key_list.append(k)
             ret[1].append((k,v))
@@ -82,12 +83,10 @@ def query_table(ret, table):
 
     table_results.pop(0)
     x = " ".join(table_results)
-    query_results = "select * from " + table + " where " + x + ";"
-    print(query_results)
+    query = "select * from " + table + " where " + x + ";"
+    delete = "DELETE FROM " + table + " where " + x + ";"
+    query_results = [query,delete,ret]
     return query_results
-
-def state_test(path,q):
-    connector(path,q)
 
 def sort(tup):
     lst = []
@@ -105,7 +104,6 @@ def sort(tup):
 def arrange(lis):
     res = []
     for sup in lis:
-        print(sup)
         if isinstance(sup[0], int):
             x = (sup[1],sup[0])
             res.append(x)
