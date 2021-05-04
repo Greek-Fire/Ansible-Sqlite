@@ -19,7 +19,7 @@ EXAMPLES = r'''
       Column_header2: 'row1_value'
     - Column_header1: 'row2_value'
     path: /path/to/sqlite.db
-    tables: test
+    table: test
 '''
     
 import os
