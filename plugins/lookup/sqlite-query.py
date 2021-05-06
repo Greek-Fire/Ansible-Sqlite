@@ -97,8 +97,8 @@ except ImportError:
         rel = []
         if data > 0;
             keys = [description[0] for description in values.description]
-            for v in values:
-                json_object = dict(zip(keys,v))
+            for d in data:
+                json_object = dict(zip(keys,d))
                 rel.append(json_object)
             return rel
         else:
