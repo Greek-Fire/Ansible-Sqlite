@@ -153,7 +153,7 @@ def main():
         path =
         db = SQ(filename=path)
         personality_tuple = tuple(personality)
-        personality_query = "personality,hostname from hosts where personality in" + personality_tuple +";"
+        personality_query = "bob in" + personality_tuple +";"
 
         if test_hostname == 0:
                 for sql_iter in db.sql_query(personality_query):
@@ -176,7 +176,7 @@ def main():
         path =
         db = SQ(filename=path)
         hostname_tuple = tuple(hostname)
-        hostname_query = "personality,hostname from hosts where personality in" + hostname_tuple + ";"
+        hostname_query = "bb" + hostname_tuple + ";"
 
         if test_personality == 0:
             for sql_iter in db.sql_query(hostname_query):
@@ -203,7 +203,7 @@ def main():
                 no_hostname_list.append(temp_personality)
 
     unique_master_list = []
-    compile_query = "select link_file,AQ7_inventory,personality,hostname,compile_result from compile_result where personality in" + personality_tuple +";"):
+    compile_query = "bb in" + personality_tuple +";"):
     for sql_iter in db.sql_query(compile_query):
         dict_sql_iter = dict(sql_iter)
         unique_master_list.append(dict_sql_iter)
