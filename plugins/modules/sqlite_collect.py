@@ -27,8 +27,11 @@ author:
 EXAMPLES = r'''
 # Pass in a message
 - name: Test with a message
-  my_namespace.my_collection.sqlite collect:
-    name: hello world
+  sqlite collect:
+    hostname:
+    - aa
+    personality:
+    - 11
 '''
 
 RETURN = r'''
@@ -104,19 +107,6 @@ class SQ:
         self._db.close()
         del self._dbfilename
 
-class Sqlite_Data:
-    def __init__(self, **kwargs):
-
-        self._db_results = kwargs.get('db_results')
-        self._target_list = kwargs.get('target_list')
-
-    def sort_data_from_THIS_DATABASE(self, _db_results, _target_list):
-
-        if target_list > 0:
-            new_target_list = []
-            for dict_iter in _target_list:
-                for x in _db_results:
-
 
 # noinspection PyCompatibility
 def main():
@@ -140,7 +130,7 @@ def main():
     test_hostname = length(hostname)
     test_personality = length(personality)
 
-    db = SQ(filename=path, table=table)
+    db = SQ(filename=path)
 
     # contains all the hostnames and personalities
 
