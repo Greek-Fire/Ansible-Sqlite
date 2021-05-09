@@ -87,6 +87,19 @@ class SQ:
             c = self._db.execute(sql, params)
             for r in c:
                 yield r
+                
+    def sql_row(self, query):
+        """
+            db.sql_row(query)
+            get a single row, by id
+        """
+    c = self._db.execute(query)
+    return c.fetchone()
+
+    # filename property
+    @property
+    def _filename(self):
+        return self._dbfilename
 
     # filename property
     @property
